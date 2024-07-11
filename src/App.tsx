@@ -5,22 +5,22 @@ import styles from './App.module.css'
 
 function App() {
 
-  const { fetchFonestar } = useFonestar()
-
-  // useEffect(() => {
-  //   fetchFonestar()
-  // }, [])
+  const { data, fetchFonestar } = useFonestar()
 
   return (
     <>
-      <h1 className={styles.title}>Prueba Argimir Fonestar</h1>
+      <h1 className={styles.title}>Prueba de Argimir para Fonestar</h1>
 
-      <button
-        className={styles.button}
-        onClick={fetchFonestar}
-      >
-        Púlsame
-      </button>
+      {!data.length ?
+        <button
+          className={styles.button}
+          onClick={fetchFonestar}
+        >
+          Púlsame
+        </button>
+        :
+        data.map((item) => <p key={item.PROMPTID}>{item.PROMPT}</p>)
+      }
     </>
   )
 }
