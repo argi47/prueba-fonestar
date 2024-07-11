@@ -3,3 +3,17 @@
   font-size: 3rem;
   margin-top: 5rem;
 }
+
+.button {
+  display: block;
+  margin: 0 auto;
+  padding: 1rem 4rem;
+  font-size: 2rem;
+  border-radius: 1rem;
+  border: 0;
+  cursor: pointer;
+}
+
+.button:hover {
+  opacity: .8;
+}
