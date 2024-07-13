@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { z } from 'zod'
 
@@ -18,8 +18,8 @@ const FonestarSchema = z.object({
 type Fonestar = z.infer<typeof FonestarSchema>
 
 export type Languages = {
-  en: string
   es: string
+  en: string
   fr: string
   pt: string
 }
@@ -33,10 +33,11 @@ export const useFonestar = () => {
   const [fonestarData, setFonestarData] = useState<ProductDetailType[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  const fetchFonestar = async () => {
+  const apiKey = '0b2951d48367a7afaa2976a224c7c011ec00470064d52933d725624ab102b2fe'
+
+  const getFonestar = async () => {
 
     setIsLoading(true)
-    const apiKey = '0b2951d48367a7afaa2976a224c7c011ec00470064d52933d725624ab102b2fe'
 
     try {
 
@@ -45,12 +46,13 @@ export const useFonestar = () => {
       const loginHeaders = { 'X-API-KEY': apiKey }
 
       const { data } = await axios.post(loginUrl, userData, { headers: loginHeaders })
-      const token = data && data['api-token'] ? data['api-token'] : ''
+      const fonestarToken = data && data['api-token'] ? data['api-token'] : ''
 
-      if (!token) return
+      if (!fonestarToken) return
 
+      sessionStorage.setItem('token', fonestarToken)
       const getUrl = 'https://apidev.fonestar.com/v1/ia/models/modelo_traductor/prompts?page=1&pagesize=10'
-      const getHeaders = { 'X-API-KEY': apiKey, 'fstoken': token }
+      const getHeaders = { 'X-API-KEY': apiKey, 'fstoken': fonestarToken }
 
       const { data: getData } = await axios.get(getUrl, { headers: getHeaders })
 
@@ -67,8 +69,6 @@ export const useFonestar = () => {
             lang: translateResponse(item.RESPONSE)
           }
           auxData.push(auxObject)
-
-          console.log('item.FEEDBACK: ', item.FEEDBACK)
         })
 
         setFonestarData(auxData)
@@ -86,6 +86,26 @@ export const useFonestar = () => {
     }
   }
 
+  const putFonestar = async (feedback: Languages, id: string) => {
+
+    setIsLoading(true)
+
+    try {
+      const putUrl = `https://apidev.fonestar.com/v1/ia/models/modelo_traductor/prompts/${id}`
+      const payload = { Feedback: JSON.stringify(feedback) }
+      const putHeaders = { 'X-API-KEY': apiKey, 'fstoken': sessionStorage.getItem('token') }
+
+      const result = await axios.put(putUrl, payload, { headers: putHeaders })
+      console.log('result: ', result)
+    }
+    catch (error) {
+      console.log(error)
+    }
+    finally {
+      setIsLoading(false)
+    }
+  }
+
   const translateResponse = (response: string): Languages => {
     return JSON.parse(response)
   }
@@ -93,6 +113,7 @@ export const useFonestar = () => {
   return {
     fonestarData,
     isLoading,
-    fetchFonestar
+    getFonestar,
+    putFonestar
   }
 }

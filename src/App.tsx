@@ -6,7 +6,7 @@ import styles from './App.module.css'
 
 function App() {
 
-  const { fonestarData, isLoading, fetchFonestar } = useFonestar()
+  const { fonestarData, isLoading, getFonestar } = useFonestar()
 
   return (
     <>
@@ -18,7 +18,7 @@ function App() {
         !fonestarData.length ?
           <button
             className={styles.button}
-            onClick={fetchFonestar}
+            onClick={getFonestar}
           >
             Cargar datos
           </button>

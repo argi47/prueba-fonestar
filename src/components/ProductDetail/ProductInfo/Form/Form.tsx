@@ -1,4 +1,5 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
+import { useFonestar } from '../../../../hooks/useFonestar'
 import { Languages, ProductDetailType } from '../../../../hooks/useFonestar'
 import styles from './Form.module.css'
 
@@ -7,6 +8,8 @@ type FormProps = {
 }
 
 export default function Form({ data }: FormProps) {
+
+  const { putFonestar } = useFonestar()
 
   const [feedback, setFeedback] = useState<Languages>({
     es: data.PROMPT,
@@ -22,9 +25,15 @@ export default function Form({ data }: FormProps) {
     })
   }
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    putFonestar(feedback, data.PROMPTID)
+  }
+
   return (
     <form
       className={styles.form}
+      onSubmit={handleSubmit}
     >
       <div>
         <label htmlFor='en'>En: </label>
@@ -62,7 +71,12 @@ export default function Form({ data }: FormProps) {
         />
       </div>
 
-      <input className={styles.submit} type='submit' value='Actualizar' />
+      <input
+        className={styles.submit}
+        type='submit'
+        value='Actualizar'
+        disabled={Object.values(feedback).includes('')}
+      />
     </form>
   )
 }

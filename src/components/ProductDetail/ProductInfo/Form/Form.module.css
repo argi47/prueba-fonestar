@@ -43,3 +43,8 @@
   padding: 1rem 0;
   cursor: pointer;
 }
+
+.submit:disabled {
+  background-color: #BBBBBB;
+  cursor: default;
+}
