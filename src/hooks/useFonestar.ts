@@ -17,7 +17,7 @@ const FonestarSchema = z.object({
 
 type Fonestar = z.infer<typeof FonestarSchema>
 
-type Languages = {
+export type Languages = {
   en: string
   es: string
   fr: string

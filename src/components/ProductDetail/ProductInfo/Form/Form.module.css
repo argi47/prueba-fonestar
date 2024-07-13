@@ -1,0 +1,45 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    label {
+      color: #00FF08;
+      width: 4rem;
+    }
+
+    input {
+      color: #FFF;
+      background-color: transparent;
+      border: 2px solid #FFF;
+      border-radius: 5px;
+      padding: .5rem;
+
+      /* Firefox */
+      width: -moz-calc(100% - 4rem);
+      /* WebKit */
+      width: -webkit-calc(100% - 4rem);
+      /* Opera */
+      width: -o-calc(100% - 4rem);
+      /* Standard */
+      width: calc(100% - 4rem);
+    }
+  }
+}
+
+.submit {
+  color: #FFF;
+  text-transform: uppercase;
+  font-weight: 700;
+  background-color: #FF9E00;
+  border: none;
+  width: 15rem;
+  margin: 0 auto;
+  padding: 1rem 0;
+  cursor: pointer;
+}
