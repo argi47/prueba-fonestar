@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
 import { z } from 'zod'
 
@@ -41,18 +41,22 @@ export const useFonestar = () => {
 
     try {
 
-      const loginUrl = 'https://apidev.fonestar.com/v1/login'
-      const userData = { fs_user: 'fdelpozo@fonestar.es', fs_key: '3Bgjfsdhgf%8' }
-      const loginHeaders = { 'X-API-KEY': apiKey }
+      if (!sessionStorage.getItem('token')) {
 
-      const { data } = await axios.post(loginUrl, userData, { headers: loginHeaders })
-      const fonestarToken = data && data['api-token'] ? data['api-token'] : ''
+        const loginUrl = 'https://apidev.fonestar.com/v1/login'
+        const userData = { fs_user: 'fdelpozo@fonestar.es', fs_key: '3Bgjfsdhgf%8' }
+        const loginHeaders = { 'X-API-KEY': apiKey }
 
-      if (!fonestarToken) return
+        const { data } = await axios.post(loginUrl, userData, { headers: loginHeaders })
+        const fonestarToken = data && data['api-token'] ? data['api-token'] : ''
 
-      sessionStorage.setItem('token', fonestarToken)
+        if (!fonestarToken) return
+
+        sessionStorage.setItem('token', fonestarToken)
+      }
+
       const getUrl = 'https://apidev.fonestar.com/v1/ia/models/modelo_traductor/prompts?page=1&pagesize=10'
-      const getHeaders = { 'X-API-KEY': apiKey, 'fstoken': fonestarToken }
+      const getHeaders = { 'X-API-KEY': apiKey, 'fstoken': sessionStorage.getItem('token') }
 
       const { data: getData } = await axios.get(getUrl, { headers: getHeaders })
 
