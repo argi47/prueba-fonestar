@@ -3,22 +3,34 @@ import axios from 'axios'
 import { z } from 'zod'
 
 
-//  Zod
+//  Validación de esquema con Zod
+
 const FonestarSchema = z.object({
   FEEDBACK: z.string(),
-  IAMODEL: z.string(),
-  MODEL: z.string(),
+  // IAMODEL: z.string(),
+  // MODEL: z.string(),
   PROMPT: z.string(),
   PROMPTID: z.string(),
   RESPONSE: z.string(),
-  UPDATEDAT: z.string(),
+  // UPDATEDAT: z.string()
 })
 
-export type Fonestar = z.infer<typeof FonestarSchema>
+type Fonestar = z.infer<typeof FonestarSchema>
 
-export default function useFonestar() {
+type Languages = {
+  en: string
+  es: string
+  fr: string
+  pt: string
+}
 
-  const [data, setData] = useState<Fonestar[]>([])
+export type ProductDetailType = Fonestar & {
+  lang: Languages
+}
+
+export const useFonestar = () => {
+
+  const [fonestarData, setFonestarData] = useState<ProductDetailType[]>([])
 
   const fetchFonestar = async () => {
 
@@ -35,19 +47,32 @@ export default function useFonestar() {
 
       if (!token) return
 
-      console.log('token: ', token)
-
       const getUrl = 'https://apidev.fonestar.com/v1/ia/models/modelo_traductor/prompts?page=1&pagesize=10'
       const getHeaders = { 'X-API-KEY': apiKey, 'fstoken': token }
 
       const { data: getData } = await axios.get(getUrl, { headers: getHeaders })
 
-      if (getData && getData._items) {
-        setData(getData._items)
-        console.log(getData._items)
+      if (getData && getData._items && getData._items.length) {
+
+        let auxData: ProductDetailType[] = []
+
+        getData._items.map((item: Fonestar) => {
+          const auxObject: ProductDetailType = {
+            FEEDBACK: item.FEEDBACK,
+            PROMPT: item.PROMPT,
+            PROMPTID: item.PROMPTID,
+            RESPONSE: item.RESPONSE,
+            lang: translateResponse(item.RESPONSE)
+          }
+          auxData.push(auxObject)
+
+          console.log('item.FEEDBACK: ', item.FEEDBACK)
+        })
+
+        setFonestarData(auxData)
       }
       else {
-        console.log('Los datos no se recibieron bien')
+        console.log('ERROR: Los tipos de datos recibidos no coinciden con los esperados.')
         return
       }
     }
@@ -56,8 +81,12 @@ export default function useFonestar() {
     }
   }
 
+  const translateResponse = (response: string): Languages => {
+    return JSON.parse(response)
+  }
+
   return {
-    data,
+    fonestarData,
     fetchFonestar
   }
 }

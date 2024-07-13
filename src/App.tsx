@@ -1,17 +1,18 @@
 // import { useEffect } from 'react'
-import useFonestar from './hooks/useFonestar'
+import { useFonestar } from './hooks/useFonestar'
 import styles from './App.module.css'
+import ProductDetail from './components/ProductDetail/ProductDetail'
 
 
 function App() {
 
-  const { data, fetchFonestar } = useFonestar()
+  const { fonestarData, fetchFonestar } = useFonestar()
 
   return (
     <>
       <h1 className={styles.title}>Prueba de Argimir para Fonestar</h1>
 
-      {!data.length ?
+      {!fonestarData.length ?
         <button
           className={styles.button}
           onClick={fetchFonestar}
@@ -19,7 +20,7 @@ function App() {
           Púlsame
         </button>
         :
-        data.map((item) => <p key={item.PROMPTID}>{item.PROMPT}</p>)
+        <ProductDetail fonestarData={fonestarData} />
       }
     </>
   )
