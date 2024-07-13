@@ -31,9 +31,11 @@ export type ProductDetailType = Fonestar & {
 export const useFonestar = () => {
 
   const [fonestarData, setFonestarData] = useState<ProductDetailType[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const fetchFonestar = async () => {
 
+    setIsLoading(true)
     const apiKey = '0b2951d48367a7afaa2976a224c7c011ec00470064d52933d725624ab102b2fe'
 
     try {
@@ -79,6 +81,9 @@ export const useFonestar = () => {
     catch (error) {
       console.log(error)
     }
+    finally {
+      setIsLoading(false)
+    }
   }
 
   const translateResponse = (response: string): Languages => {
@@ -87,6 +92,7 @@ export const useFonestar = () => {
 
   return {
     fonestarData,
+    isLoading,
     fetchFonestar
   }
 }

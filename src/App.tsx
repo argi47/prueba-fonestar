@@ -1,26 +1,29 @@
-// import { useEffect } from 'react'
 import { useFonestar } from './hooks/useFonestar'
-import styles from './App.module.css'
 import ProductDetail from './components/ProductDetail/ProductDetail'
+import Spinner from './components/Spinner/Spinner'
+import styles from './App.module.css'
 
 
 function App() {
 
-  const { fonestarData, fetchFonestar } = useFonestar()
+  const { fonestarData, isLoading, fetchFonestar } = useFonestar()
 
   return (
     <>
       <h1 className={styles.title}>Prueba de Argimir para Fonestar</h1>
 
-      {!fonestarData.length ?
-        <button
-          className={styles.button}
-          onClick={fetchFonestar}
-        >
-          Púlsame
-        </button>
+      {isLoading ?
+        <Spinner />
         :
-        <ProductDetail fonestarData={fonestarData} />
+        !fonestarData.length ?
+          <button
+            className={styles.button}
+            onClick={fetchFonestar}
+          >
+            Cargar datos
+          </button>
+          :
+          <ProductDetail fonestarData={fonestarData} />
       }
     </>
   )
