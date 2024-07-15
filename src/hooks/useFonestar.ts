@@ -33,7 +33,23 @@ export const useFonestar = () => {
   const [fonestarData, setFonestarData] = useState<ProductDetailType[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  const apiKey = '0b2951d48367a7afaa2976a224c7c011ec00470064d52933d725624ab102b2fe'
+  const apiKey = import.meta.env.VITE_API_KEY
+
+  const checkFeedbackStructure = (fb: string): boolean => {
+
+    if (!fb) return false
+
+    try {
+      translateResponse(fb)
+    } catch (e) {
+      return false
+    }
+    return true
+  }
+
+  const translateResponse = (response: string): Languages => {
+    return JSON.parse(response)
+  }
 
   const getFonestar = async () => {
 
@@ -44,7 +60,9 @@ export const useFonestar = () => {
       if (!sessionStorage.getItem('token')) {
 
         const loginUrl = 'https://apidev.fonestar.com/v1/login'
-        const userData = { fs_user: 'fdelpozo@fonestar.es', fs_key: '3Bgjfsdhgf%8' }
+        const fsUser = import.meta.env.VITE_FS_USER
+        const fsKey = import.meta.env.VITE_FS_KEY
+        const userData = { fs_user: fsUser, fs_key: fsKey }
         const loginHeaders = { 'X-API-KEY': apiKey }
 
         const { data } = await axios.post(loginUrl, userData, { headers: loginHeaders })
@@ -55,7 +73,7 @@ export const useFonestar = () => {
         sessionStorage.setItem('token', fonestarToken)
       }
 
-      const getUrl = 'https://apidev.fonestar.com/v1/ia/models/modelo_traductor/prompts?page=1&pagesize=10'
+      const getUrl = 'https://apidev.fonestar.com/v1/ia/models/modelo_traductor/prompts?page=1&pagesize=10&kobayashimaru'
       const getHeaders = { 'X-API-KEY': apiKey, 'fstoken': sessionStorage.getItem('token') }
 
       const { data: getData } = await axios.get(getUrl, { headers: getHeaders })
@@ -70,7 +88,8 @@ export const useFonestar = () => {
             PROMPT: item.PROMPT,
             PROMPTID: item.PROMPTID,
             RESPONSE: item.RESPONSE,
-            lang: translateResponse(item.RESPONSE)
+            //  Si feedback tiene datos válidos, mostraremos feedback por pantalla. En caso contrario mostramos response.
+            lang: checkFeedbackStructure(item.FEEDBACK) ? translateResponse(item.FEEDBACK) : translateResponse(item.RESPONSE)
           }
           auxData.push(auxObject)
         })
@@ -99,8 +118,7 @@ export const useFonestar = () => {
       const payload = { Feedback: JSON.stringify(feedback) }
       const putHeaders = { 'X-API-KEY': apiKey, 'fstoken': sessionStorage.getItem('token') }
 
-      const result = await axios.put(putUrl, payload, { headers: putHeaders })
-      console.log('result: ', result)
+      await axios.put(putUrl, payload, { headers: putHeaders })
     }
     catch (error) {
       console.log(error)
@@ -108,10 +126,6 @@ export const useFonestar = () => {
     finally {
       setIsLoading(false)
     }
-  }
-
-  const translateResponse = (response: string): Languages => {
-    return JSON.parse(response)
   }
 
   return {

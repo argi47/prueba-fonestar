@@ -36,12 +36,15 @@ export default function ProductInfo({ isTablet, data, lastElement }: ProductInfo
           {data.lang.pt}
         </p>
         <div className={styles.feedbackCont}>
-          {data.FEEDBACK &&
+
+          {/* Descomentar si se quiere mostrar el valor de FEEDBACK recibido en formato string */}
+
+          {/* {data.FEEDBACK &&
             <p>
               {!isTablet && <span>Feedback: </span>}
               {data.FEEDBACK}
             </p>
-          }
+          } */}
 
           <button onClick={() => setShowForm(!showForm)}>
             <FaEdit size='3rem' color='#00AAFF' />
