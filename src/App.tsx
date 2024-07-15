@@ -6,7 +6,7 @@ import styles from './App.module.css'
 
 function App() {
 
-  const { fonestarData, isLoading, getFonestar } = useFonestar()
+  const { fonestarData, isLoading, getFonestar, putFonestar } = useFonestar()
 
   return (
     <>
@@ -23,7 +23,10 @@ function App() {
             Cargar datos
           </button>
           :
-          <ProductDetail fonestarData={fonestarData} />
+          <ProductDetail
+            fonestarData={fonestarData}
+            putFonestar={putFonestar}
+          />
       }
     </>
   )

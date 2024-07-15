@@ -119,6 +119,8 @@ export const useFonestar = () => {
       const putHeaders = { 'X-API-KEY': apiKey, 'fstoken': sessionStorage.getItem('token') }
 
       await axios.put(putUrl, payload, { headers: putHeaders })
+
+      getFonestar()
     }
     catch (error) {
       console.log(error)

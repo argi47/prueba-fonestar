@@ -1,12 +1,13 @@
-import { ProductDetailType } from '../../hooks/useFonestar'
+import { Languages, ProductDetailType } from '../../hooks/useFonestar'
 import ProductInfo from './ProductInfo/ProductInfo'
 import styles from './ProductDetail.module.css'
 
 type ProductDetailProps = {
   fonestarData: ProductDetailType[]
+  putFonestar: (feedback: Languages, id: string) => Promise<void>
 }
 
-export default function ProductDetail({ fonestarData }: ProductDetailProps) {
+export default function ProductDetail({ fonestarData, putFonestar }: ProductDetailProps) {
 
   const isTablet = window.innerWidth >= 768
 
@@ -29,6 +30,7 @@ export default function ProductDetail({ fonestarData }: ProductDetailProps) {
           isTablet={isTablet}
           data={item}
           lastElement={!(i < fonestarData.length - 1)}
+          putFonestar={putFonestar}
         />
       ))}
     </div>

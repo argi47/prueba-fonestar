@@ -1,16 +1,17 @@
 import { FaEdit } from 'react-icons/fa'
 import Form from './Form/Form'
 import styles from './ProductInfo.module.css'
-import { ProductDetailType } from '../../../hooks/useFonestar'
+import { Languages, ProductDetailType } from '../../../hooks/useFonestar'
 import { useState } from 'react'
 
 type ProductInfoProps = {
   isTablet: boolean
   data: ProductDetailType
   lastElement: boolean
+  putFonestar: (feedback: Languages, id: string) => Promise<void>
 }
 
-export default function ProductInfo({ isTablet, data, lastElement }: ProductInfoProps) {
+export default function ProductInfo({ isTablet, data, lastElement, putFonestar }: ProductInfoProps) {
 
   const [showForm, setShowForm] = useState(false)
 
@@ -53,7 +54,10 @@ export default function ProductInfo({ isTablet, data, lastElement }: ProductInfo
       </div>
 
       {showForm &&
-        <Form data={data} />
+        <Form
+          data={data}
+          putFonestar={putFonestar}
+        />
       }
 
       {!lastElement &&

@@ -1,15 +1,13 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
-import { useFonestar } from '../../../../hooks/useFonestar'
 import { Languages, ProductDetailType } from '../../../../hooks/useFonestar'
 import styles from './Form.module.css'
 
 type FormProps = {
   data: ProductDetailType
+  putFonestar: (feedback: Languages, id: string) => Promise<void>
 }
 
-export default function Form({ data }: FormProps) {
-
-  const { putFonestar } = useFonestar()
+export default function Form({ data, putFonestar }: FormProps) {
 
   const [feedback, setFeedback] = useState<Languages>({
     es: data.PROMPT,
